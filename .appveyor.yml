@@ -129,20 +129,33 @@ test_script:
       Else {vendor\bin\phpunit -c tests\appveyor\%db%.%driver%.appveyor.xml}
 
 on_finish:
-  - ps: write-host "list databases" -foregroundcolor Green
-  - ps: [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SMO') | out-null
-  - ps: $s = New-Object ('Microsoft.SqlServer.Management.Smo.Server') "(local)\SQL2014"
-  - ps: $dbs=$s.Databases
-  - ps: $dbs | Select Name
+  - ps: >-
+      write-host "list databases" -foregroundcolor Green
+      
+      [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SMO') | out-null
+      
+      $s = New-Object ('Microsoft.SqlServer.Management.Smo.Server') "(local)\SQL2014"
+      
+      $dbs=$s.Databases
+      
+      $dbs | Select Name
   
-  - ps: write-host "try connect to master" -foregroundcolor Green
-  - ps: $SqlConnection = New-Object System.Data.SqlClient.SqlConnection
-  - ps: $SqlConnection.ConnectionString = "Server=(local)\SQL2014;Database=master;User ID=sa;Password=Password12!"
-  - ps: $SqlConnection.Open()
-  - ps: $SqlConnection.State
+      write-host "try connect to master" -foregroundcolor Green
+      
+      $SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+      
+      $SqlConnection.ConnectionString = "Server=(local)\SQL2014;Database=master;User ID=sa;Password=Password12!"
+      
+      $SqlConnection.Open()
+      
+      $SqlConnection.State
   
-  - ps: write-host "try connect to doctrine_tests" -foregroundcolor Green
-  - ps: $SqlConnection2 = New-Object System.Data.SqlClient.SqlConnection
-  - ps: $SqlConnection2.ConnectionString = "Server=(local)\SQL2014;Database=doctrine_tests;User ID=sa;Password=Password12!"
-  - ps: $SqlConnection2.Open()
-  - ps: $SqlConnection2.State
+      write-host "try connect to doctrine_tests" -foregroundcolor Green
+      
+      $SqlConnection2 = New-Object System.Data.SqlClient.SqlConnection
+      
+      $SqlConnection2.ConnectionString = "Server=(local)\SQL2014;Database=doctrine_tests;User ID=sa;Password=Password12!"
+      
+      $SqlConnection2.Open()
+      
+      $SqlConnection2.State
