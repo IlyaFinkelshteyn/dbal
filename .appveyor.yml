@@ -127,3 +127,22 @@ test_script:
   - ps: >-
       If ($env:db_version) {vendor\bin\phpunit -c tests\appveyor\%db%.%db_version%.%driver%.appveyor.xml}
       Else {vendor\bin\phpunit -c tests\appveyor\%db%.%driver%.appveyor.xml}
+
+on_finish:
+  - ps: write-host "list databases" -foregroundcolor Green
+  - ps: [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SMO') | out-null
+  - ps: $s = New-Object ('Microsoft.SqlServer.Management.Smo.Server') "(local)\SQL2014"
+  - ps: $dbs=$s.Databases
+  - ps: $dbs | Select Name
+  
+  - ps: write-host "try connect to master" -foregroundcolor Green
+  - ps: $SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+  - ps: $SqlConnection.ConnectionString = "Server=(local)\SQL2014;Database=master;User ID=sa;Password=Password12!"
+  - ps: $SqlConnection.Open()
+  - ps: $SqlConnection.State
+  
+  - ps: write-host "try connect to doctrine_tests" -foregroundcolor Green
+  - ps: $SqlConnection2 = New-Object System.Data.SqlClient.SqlConnection
+  - ps: $SqlConnection2.ConnectionString = "Server=(local)\SQL2014;Database=doctrine_tests;User ID=sa;Password=Password12!"
+  - ps: $SqlConnection2.Open()
+  - ps: $SqlConnection2.State
